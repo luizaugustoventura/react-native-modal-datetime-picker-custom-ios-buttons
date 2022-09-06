@@ -1,6 +1,77 @@
 import React, {useState} from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Alert,
+  ViewStyle,
+  TextStyle,
+} from 'react-native';
+import DateTimePickerModal, {
+  CancelButton,
+  CancelButtonStylePropTypes,
+  cancelButtonStyles,
+  ConfirmButton,
+  ConfirmButtonStylePropTypes,
+  confirmButtonStyles,
+} from 'react-native-modal-datetime-picker';
+
+const confirmButtonIOSCustomStyles: ConfirmButtonStylePropTypes = {
+  ...confirmButtonStyles,
+  text: {
+    ...confirmButtonStyles.text,
+    color: '#0B0',
+  },
+};
+
+const cancelButtonIOSCustomStyles: CancelButtonStylePropTypes = {
+  ...cancelButtonStyles,
+  text: {
+    ...cancelButtonStyles.text,
+    color: 'red',
+    fontWeight: 'bold',
+  },
+  button: {
+    ...cancelButtonStyles.button,
+    height: 66,
+  },
+};
+
+const customButtonsIOSStyles: {
+  button: ViewStyle;
+  text: TextStyle;
+} = {
+  button: {
+    width: '100%',
+    height: 48,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  text: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#BD2DA7',
+  },
+};
+
+const CustomConfirmButton = (props: {onPress: () => void}) => (
+  <TouchableOpacity
+    onPress={props.onPress}
+    style={customButtonsIOSStyles.button}
+  >
+    <Text style={customButtonsIOSStyles.text}>Confirm</Text>
+  </TouchableOpacity>
+);
+
+const CustomCancelButton = (props: {onPress: () => void}) => (
+  <TouchableOpacity
+    onPress={props.onPress}
+    style={customButtonsIOSStyles.button}
+  >
+    <Text style={customButtonsIOSStyles.text}>Cancel</Text>
+  </TouchableOpacity>
+);
 
 const App = () => {
   const [isPicker1Visible, setPicker1Visible] = useState(false);
@@ -45,6 +116,12 @@ const App = () => {
             setPicker1Visible(false);
           }}
           onCancel={() => setPicker1Visible(false)}
+          customConfirmButtonIOS={props => (
+            <ConfirmButton {...props} style={confirmButtonIOSCustomStyles} />
+          )}
+          customCancelButtonIOS={props => (
+            <CancelButton {...props} style={cancelButtonIOSCustomStyles} />
+          )}
         />
 
         <DateTimePickerModal
@@ -56,6 +133,26 @@ const App = () => {
             setPicker2Visible(false);
           }}
           onCancel={() => setPicker2Visible(false)}
+          customConfirmButtonIOS={props => (
+            <ConfirmButton
+              {...props}
+              buttonTextColorIOS="#93F"
+              onPress={() => {
+                props.onPress();
+                Alert.alert('You pressed ConfirmButton');
+              }}
+            />
+          )}
+          customCancelButtonIOS={props => (
+            <CancelButton
+              {...props}
+              buttonTextColorIOS="#C70"
+              onPress={() => {
+                props.onPress();
+                Alert.alert('You pressed CancelButton');
+              }}
+            />
+          )}
         />
 
         <DateTimePickerModal
@@ -67,6 +164,12 @@ const App = () => {
             setPicker3Visible(false);
           }}
           onCancel={() => setPicker3Visible(false)}
+          customConfirmButtonIOS={props => (
+            <CustomConfirmButton onPress={props.onPress} />
+          )}
+          customCancelButtonIOS={props => (
+            <CustomCancelButton onPress={props.onPress} />
+          )}
         />
       </View>
     </View>
@@ -81,7 +184,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   text: {
-    color: '#9933FF',
+    color: '#007FF9',
   },
   datePickerTrigger: {
     marginTop: 6,
